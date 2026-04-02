@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background */
         body::before {
             content: '';
             position: fixed;
@@ -41,7 +40,6 @@
             z-index: 0;
         }
 
-        /* Dot grid texture */
         body::after {
             content: '';
             position: fixed;
@@ -60,7 +58,6 @@
             padding: 36px 22px 50px;
         }
 
-        /* Top bar */
         .topbar {
             display: flex;
             justify-content: space-between;
@@ -96,7 +93,6 @@
             font-size: 1.1rem;
         }
 
-        /* Header */
         .header {
             margin-bottom: 40px;
             animation: fadeDown 0.5s 0.1s ease both;
@@ -122,10 +118,6 @@
             background-clip: text;
         }
 
-        .header h1 .name-highlight {
-            position: relative;
-        }
-
         .header p {
             color: var(--muted);
             margin-top: 10px;
@@ -133,7 +125,6 @@
             font-weight: 400;
         }
 
-        /* Divider */
         .divider {
             display: flex;
             align-items: center;
@@ -156,7 +147,6 @@
             font-weight: 600;
         }
 
-        /* Action Cards */
         .action-card {
             display: flex;
             align-items: center;
@@ -190,20 +180,15 @@
             background: linear-gradient(135deg, rgba(162,155,254,0.10), transparent);
         }
 
-        .action-card:active {
-            transform: scale(0.97);
-        }
+        .action-card:active { transform: scale(0.97); }
 
         .action-card:hover {
             border-color: rgba(91,79,207,0.5);
             box-shadow: 0 8px 32px rgba(91,79,207,0.15);
         }
 
-        .action-card:hover::before {
-            opacity: 1;
-        }
+        .action-card:hover::before { opacity: 1; }
 
-        /* Shimmer line on top of card */
         .action-card::after {
             content: '';
             position: absolute;
@@ -261,7 +246,6 @@
             color: var(--p-light);
         }
 
-        /* Badge */
         .badge {
             display: inline-block;
             background: rgba(240,165,0,0.15);
@@ -275,7 +259,6 @@
             margin-bottom: 6px;
         }
 
-        /* Bottom quote */
         .bottom-note {
             margin-top: 36px;
             text-align: center;
@@ -285,7 +268,6 @@
             animation: fadeUp 0.5s 0.5s ease both;
         }
 
-        /* Tips */
         .tip-card {
             margin-top: 28px;
             background: var(--surface);
@@ -295,6 +277,7 @@
             position: relative;
             overflow: hidden;
             animation: fadeUp 0.5s 0.6s ease both;
+            cursor: pointer;
         }
 
         .tip-card::before {
@@ -379,7 +362,6 @@
             50%       { opacity: 0.35; transform: scale(0.8); }
         }
 
-        /* Animations */
         @keyframes fadeDown {
             from { opacity: 0; transform: translateY(-16px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -453,7 +435,6 @@
 </div>
 
 <script>
-    // ── Tips ──────────────────────────────────────────────────
     const TIPS = [
         { text: "استخدم خلفيات بسيطة لتبرز النصوص بشكل احترافي", cat: "تصميم", cls: "cat-design" },
         { text: "لا تستخدم أكثر من خطَّين مختلفين في نفس التصميم", cat: "تصميم", cls: "cat-design" },
@@ -481,9 +462,9 @@
         if (animate) {
             textEl.classList.add('fade-out');
             setTimeout(() => {
-                textEl.innerText   = t.text;
-                catEl.innerText    = t.cat;
-                catEl.className    = 'tip-category ' + t.cls;
+                textEl.innerText = t.text;
+                catEl.innerText  = t.cat;
+                catEl.className  = 'tip-category ' + t.cls;
                 textEl.classList.remove('fade-out');
             }, 220);
         } else {
@@ -502,14 +483,11 @@
     }
 
     showTip(false);
-    // rotate tip every 12s automatically
     setInterval(nextTip, 12000);
 
-    // ── Auth ──────────────────────────────────────────────────
+    // Auth — no redirect, just show name if available
     const name = localStorage.getItem('teacher_name');
-    if (!name) {
-     //   window.location.href = 'welcome.html';
-    } else {
+    if (name) {
         document.getElementById('welcomeTitle').innerText = 'أهلاً أستاذ ' + name;
     }
 </script>
