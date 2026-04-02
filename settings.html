@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات التصميم PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #5b4fcf;
+            --p-light: #7b6fe8;
+            --bg: #0d0c1a;
+            --surface: #15132b;
+            --surface2: #1e1b38;
+            --text: #f0eeff;
+            --muted: #8b85b5;
+            --border: rgba(255,255,255,0.07);
+            --danger: #ff4757;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 0%, rgba(91,79,207,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 100%, rgba(162,155,254,0.1) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 0 16px 60px;
+        }
+
+        /* ── Top Bar ── */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 16px;
+            animation: fadeDown 0.4s ease both;
+        }
+
+        .back-btn {
+            width: 38px; height: 38px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1rem;
+            color: var(--muted);
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:hover { border-color: var(--p-light); color: var(--p-light); }
+
+        .page-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .step-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            color: var(--muted);
+        }
+
+        /* ── Canvas ── */
+        .preview-wrap {
+            margin-bottom: 20px;
+            animation: fadeDown 0.4s 0.1s ease both;
+        }
+
+        .preview-shell {
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(91,79,207,0.4);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 24px 60px rgba(0,0,0,0.6);
+            background: #000;
+            position: relative;
+        }
+
+        .preview-hint {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 2;
+            background: rgba(0,0,0,0.35);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        canvas { width: 100%; display: block; cursor: crosshair; }
+
+        /* ── Tap hint banner ── */
+        .tap-hint {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(91,79,207,0.08);
+            border: 1px solid rgba(91,79,207,0.2);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            animation: fadeUp 0.4s 0.15s ease both;
+        }
+        .tap-hint span { font-size: 1rem; }
+
+        /* ── Controls Panel ── */
+        .controls-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: opacity 0.3s, transform 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.4s 0.2s ease both;
+        }
+
+        .controls-panel::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 40%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.08), transparent);
+        }
+
+        .controls-hidden {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .panel-title .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--p-light);
+        }
+
+        .empty-hint {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            padding: 10px 0;
+        }
+
+        /* ── Control Rows ── */
+        .control-row { margin-bottom: 18px; }
+        .control-row:last-child { margin-bottom: 0; }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .control-label span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .control-label .control-val {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--p-light);
+            background: rgba(91,79,207,0.12);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* Custom Range */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--surface2);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: var(--p-light);
+            box-shadow: 0 2px 10px rgba(91,79,207,0.4);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); }
+
+        /* Color row */
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .color-swatch-wrap {
+            position: relative;
+            width: 48px; height: 48px;
+        }
+
+        input[type="color"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%; height: 100%;
+        }
+
+        .color-swatch {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.1);
+            pointer-events: none;
+            transition: border-color 0.2s;
+        }
+
+        .color-hex {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+
+        /* Presets */
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preset-dot {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .preset-dot:hover { transform: scale(1.2); }
+        .preset-dot.active { border-color: #fff; transform: scale(1.15); }
+
+        /* Delete button */
+        .btn-delete {
+            background: rgba(255,71,87,0.12);
+            color: var(--danger);
+            border: 1px solid rgba(255,71,87,0.25);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: none;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover { background: rgba(255,71,87,0.2); }
+
+        /* ── Bottom Buttons ── */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 10px;
+            animation: fadeUp 0.4s 0.3s ease both;
+        }
+
+        .btn {
+            padding: 17px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 900;
+            font-family: inherit;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-back {
+            background: var(--surface);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-back:hover { border-color: var(--p-light); color: var(--p-light); }
+
+        .btn-send {
+            background: linear-gradient(135deg, #5b4fcf, #7b6fe8);
+            color: #fff;
+            box-shadow: 0 8px 28px rgba(91,79,207,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-send::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        .btn-send:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(91,79,207,0.45); }
+        .btn-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Animations ── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <a href="javascript:history.back()" class="back-btn">→</a>
+        <div class="page-title">محرر التصميم</div>
+        <div class="step-badge">خطوة 3/3</div>
+    </div>
+
+    <!-- Canvas Preview -->
+    <div class="preview-wrap">
+        <div class="preview-shell">
+            <canvas id="editCanvas"></canvas>
+            <div class="preview-hint">اضغط على العناصر لتعديلها</div>
+        </div>
+    </div>
+
+    <!-- Tap hint -->
+    <div class="tap-hint">
+        <span>👆</span>
+        اضغط على أي نص في التصميم لتحديده وتعديل خصائصه
+    </div>
+
+    <!-- Controls Panel -->
+    <div id="controls" class="controls-panel controls-hidden">
+        <div class="panel-header">
+            <div class="panel-title">
+                <div class="dot"></div>
+                <span id="panelTitle">إعدادات العنصر</span>
+            </div>
+            <button id="btnDelete" class="btn-delete" onclick="deleteElement()">حذف ✕</button>
+        </div>
+
+        <!-- Size -->
+        <div class="control-row">
+            <div class="control-label">
+                <span>الحجم</span>
+                <div class="control-val" id="sizeVal">60</div>
+            </div>
+            <input type="range" id="sizeRange" min="10" max="150" value="60" oninput="updateElement()">
+        </div>
+
+        <!-- Opacity -->
+        <div class="control-row">
+            <div class="control-label">
+                <span>الشفافية</span>
+                <div class="control-val" id="opacityVal">100%</div>
+            </div>
+            <input type="range" id="opacityRange" min="0" max="1" step="0.05" value="1" oninput="updateElement()">
+        </div>
+
+        <!-- Color -->
+        <div class="control-row">
+            <div class="control-label">
+                <span>اللون</span>
+            </div>
+            <div class="color-row">
+                <div class="color-swatch-wrap">
+                    <div class="color-swatch" id="colorSwatch" style="background:#ffffff;"></div>
+                    <input type="color" id="colorPicker" value="#ffffff" oninput="updateElement()">
+                </div>
+                <div class="color-hex" id="colorHex">#FFFFFF</div>
+            </div>
+            <div class="color-presets" id="colorPresets">
+                <!-- injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty state hint when nothing selected -->
+    <div id="emptyHint" style="display:none; text-align:center; color:var(--muted); font-size:0.8rem; margin-bottom:16px; animation: fadeUp 0.3s ease both;">
+        اضغط على نص في التصميم لبدء التعديل
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-group">
+        <button class="btn btn-back" onclick="history.back()">رجوع</button>
+        <button id="btnSubmit" class="btn btn-send" onclick="sendToCloud()">إرسال للموقع 🚀</button>
+    </div>
+
+</div>
+
+<script>
+    const canvas = document.getElementById('editCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // ─── Config ───────────────────────────────────────────────
+    const CLOUD_URL = "https://my-downloa-photo-web.onrender.com/upload";
+
+    const COLOR_PRESETS = [
+        '#ffffff', '#f0eeff', '#a29bfe', '#6c5ce7',
+        '#f0a500', '#fd79a8', '#00cec9', '#55efc4',
+        '#ff4757', '#2d3436'
+    ];
+
+    // ─── State ────────────────────────────────────────────────
+    let elements = [
+        { id: 1, type: 'text', content: 'أستاذ الرياضيات',       x: 400, y: 550, size: 60, color: '#ffffff', opacity: 1 },
+        { id: 2, type: 'text', content: 'مراجعة ليلة الامتحان',  x: 400, y: 635, size: 35, color: '#a29bfe', opacity: 1 }
+    ];
+
+    let bgImg      = new Image();
+    let selectedIdx = -1;
+    let isDragging  = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    canvas.width  = 800;
+    canvas.height = 800;
+
+    // ─── Init ─────────────────────────────────────────────────
+    window.onload = () => {
+        buildPresets();
+        bgImg.crossOrigin = "anonymous";
+        bgImg.src = sessionStorage.getItem('selected_img') ||
+            "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800";
+        bgImg.onload = render;
+    };
+
+    // ─── Render ───────────────────────────────────────────────
+    function render() {
+        ctx.clearRect(0, 0, 800, 800);
+        ctx.drawImage(bgImg, 0, 0, 800, 800);
+
+        // slight overlay
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(0, 0, 800, 800);
+
+        elements.forEach((el, i) => {
+            ctx.globalAlpha = parseFloat(el.opacity);
+
+            if (el.type === 'text') {
+                ctx.font      = `900 ${el.size}px 'Cairo'`;
+                ctx.textAlign = 'center';
+
+                // shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.55)';
+                ctx.shadowBlur  = 14;
+
+                ctx.fillStyle = el.color;
+                ctx.fillText(el.content, el.x, el.y);
+                ctx.shadowBlur = 0;
+
+                // selection ring
+                if (i === selectedIdx) {
+                    const tw = ctx.measureText(el.content).width;
+                    const pad = 18;
+                    const rx  = el.x - tw / 2 - pad;
+                    const ry  = el.y - parseInt(el.size) - 4;
+                    const rw  = tw + pad * 2;
+                    const rh  = parseInt(el.size) + 24;
+
+                    ctx.globalAlpha = 1;
+                    // glow fill
+                    ctx.fillStyle = 'rgba(91,79,207,0.12)';
+                    roundRect(ctx, rx, ry, rw, rh, 12, true, false);
+                    // dashed border
+                    ctx.strokeStyle = '#7b6fe8';
+                    ctx.lineWidth   = 2.5;
+                    ctx.setLineDash([8, 5]);
+                    roundRect(ctx, rx, ry, rw, rh, 12, false, true);
+                    ctx.setLineDash([]);
+
+                    // corner handles
+                    [
+                        [rx, ry], [rx + rw, ry],
+                        [rx, ry + rh], [rx + rw, ry + rh]
+                    ].forEach(([hx, hy]) => {
+                        ctx.fillStyle = '#7b6fe8';
+                        ctx.globalAlpha = 1;
+                        ctx.beginPath();
+                        ctx.arc(hx, hy, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+            }
+        });
+
+        ctx.globalAlpha = 1;
+        updatePanelUI();
+    }
+
+    function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+        if (fill)   ctx.fill();
+        if (stroke) ctx.stroke();
+    }
+
+    // ─── Panel UI ─────────────────────────────────────────────
+    function updatePanelUI() {
+        const panel   = document.getElementById('controls');
+        const btnDel  = document.getElementById('btnDelete');
+        const empty   = document.getElementById('emptyHint');
+
+        if (selectedIdx === -1) {
+            panel.classList.add('controls-hidden');
+            btnDel.style.display = 'none';
+            empty.style.display  = 'none';
+        } else {
+            panel.classList.remove('controls-hidden');
+            btnDel.style.display = 'block';
+            empty.style.display  = 'none';
+
+            const el = elements[selectedIdx];
+            const sizeR    = document.getElementById('sizeRange');
+            const opR      = document.getElementById('opacityRange');
+            const colP     = document.getElementById('colorPicker');
+
+            sizeR.value = el.size;
+            opR.value   = el.opacity;
+            colP.value  = el.color;
+
+            document.getElementById('sizeVal').innerText    = el.size + 'px';
+            document.getElementById('opacityVal').innerText = Math.round(el.opacity * 100) + '%';
+            document.getElementById('colorHex').innerText   = el.color.toUpperCase();
+            document.getElementById('colorSwatch').style.background = el.color;
+            document.getElementById('panelTitle').innerText = `"${el.content.substring(0, 14)}${el.content.length > 14 ? '…' : ''}"`;
+
+            // highlight active preset
+            document.querySelectorAll('.preset-dot').forEach(d => {
+                d.classList.toggle('active', d.dataset.color === el.color.toLowerCase());
+            });
+        }
+    }
+
+    function updateElement() {
+        if (selectedIdx === -1) return;
+        const el = elements[selectedIdx];
+        el.size    = parseInt(document.getElementById('sizeRange').value);
+        el.color   = document.getElementById('colorPicker').value;
+        el.opacity = parseFloat(document.getElementById('opacityRange').value);
+
+        document.getElementById('sizeVal').innerText    = el.size + 'px';
+        document.getElementById('opacityVal').innerText = Math.round(el.opacity * 100) + '%';
+        document.getElementById('colorHex').innerText   = el.color.toUpperCase();
+        document.getElementById('colorSwatch').style.background = el.color;
+        render();
+    }
+
+    function applyPreset(color) {
+        if (selectedIdx === -1) return;
+        document.getElementById('colorPicker').value = color;
+        updateElement();
+    }
+
+    function buildPresets() {
+        const wrap = document.getElementById('colorPresets');
+        COLOR_PRESETS.forEach(c => {
+            const d = document.createElement('div');
+            d.className       = 'preset-dot';
+            d.dataset.color   = c;
+            d.style.background = c;
+            d.style.border    = c === '#0d0c1a' ? '2px solid #444' : '2px solid transparent';
+            d.onclick = () => applyPreset(c);
+            wrap.appendChild(d);
+        });
+    }
+
+    function deleteElement() {
+        if (selectedIdx === -1) return;
+        elements.splice(selectedIdx, 1);
+        selectedIdx = -1;
+        render();
+    }
+
+    // ─── Drag & Drop ──────────────────────────────────────────
+    function getCanvasPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX - rect.left)  * (800 / rect.width),
+            y: (e.clientY - rect.top)   * (800 / rect.height)
+        };
+    }
+
+    function hitTest(pos) {
+        for (let i = elements.length - 1; i >= 0; i--) {
+            const el = elements[i];
+            if (el.type !== 'text') continue;
+            ctx.font = `900 ${el.size}px 'Cairo'`;
+            const tw = ctx.measureText(el.content).width;
+            const pad = 18;
+            if (
+                pos.x >= el.x - tw / 2 - pad &&
+                pos.x <= el.x + tw / 2 + pad &&
+                pos.y >= el.y - parseInt(el.size) - 4 &&
+                pos.y <= el.y + 24
+            ) return i;
+        }
+        return -1;
+    }
+
+    function startDrag(e) {
+        const pos = getCanvasPos(e);
+        const hit = hitTest(pos);
+        selectedIdx = hit;
+        if (hit !== -1) {
+            isDragging  = true;
+            dragOffsetX = pos.x - elements[hit].x;
+            dragOffsetY = pos.y - elements[hit].y;
+        }
+        render();
+    }
+
+    function drag(e) {
+        if (!isDragging || selectedIdx === -1) return;
+        const pos = getCanvasPos(e);
+        elements[selectedIdx].x = pos.x - dragOffsetX;
+        elements[selectedIdx].y = pos.y - dragOffsetY;
+        render();
+    }
+
+    function endDrag() { isDragging = false; }
+
+    canvas.addEventListener('mousedown',  startDrag);
+    canvas.addEventListener('mousemove',  drag);
+    canvas.addEventListener('mouseup',    endDrag);
+    canvas.addEventListener('touchstart', e => startDrag(e.touches[0]),               { passive: true });
+    canvas.addEventListener('touchmove',  e => { e.preventDefault(); drag(e.touches[0]); }, { passive: false });
+    canvas.addEventListener('touchend',   endDrag);
+
+    // ─── Send to Cloud (Render) ───────────────────────────────
+    async function sendToCloud() {
+        const prevSelected = selectedIdx;
+        selectedIdx = -1;
+        render();
+
+        const btn = document.getElementById('btnSubmit');
+        btn.innerHTML = `جاري الإرسال <span class="spinner"></span>`;
+        btn.disabled  = true;
+
+        await new Promise(r => setTimeout(r, 120)); // let canvas repaint
+
+        const base64Data = canvas.toDataURL('image/png', 1.0);
+
+        try {
+            const response = await fetch(CLOUD_URL, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ image: base64Data })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = "https://my-downloa-photo-web.onrender.com" + data.redirectUrl;
+            } else {
+                throw new Error(data.error || 'Unknown error');
+            }
+        } catch (err) {
+            alert('فشل الاتصال بالسيرفر! تأكد من جودة الإنترنت.');
+            console.error(err);
+            selectedIdx = prevSelected;
+            render();
+            btn.innerHTML = 'إرسال للموقع 🚀';
+            btn.disabled  = false;
+        }
+    }
+</script>
+</body>
+</html>

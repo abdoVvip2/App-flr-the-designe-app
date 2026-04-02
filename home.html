@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصاميمي PRO | الرئيسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #5b4fcf;
+            --p-light: #7b6fe8;
+            --p-glow: rgba(91, 79, 207, 0.18);
+            --accent: #f0a500;
+            --bg: #0d0c1a;
+            --surface: #15132b;
+            --surface2: #1e1b38;
+            --text: #f0eeff;
+            --muted: #8b85b5;
+            --border: rgba(255,255,255,0.07);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(91,79,207,0.22) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 90% 100%, rgba(162,155,254,0.12) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Dot grid texture */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 36px 22px 50px;
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 44px;
+            animation: fadeDown 0.5s ease both;
+        }
+
+        .logo {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            display: inline-block;
+            background: var(--p);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-right: 5px;
+            font-size: 0.7rem;
+        }
+
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 40px;
+            animation: fadeDown 0.5s 0.1s ease both;
+        }
+
+        .greeting-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--p-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 30%, var(--p-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header h1 .name-highlight {
+            position: relative;
+        }
+
+        .header p {
+            color: var(--muted);
+            margin-top: 10px;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            animation: fadeDown 0.5s 0.2s ease both;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider-text {
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Action Cards */
+        .action-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 20px;
+            margin-bottom: 16px;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 20px;
+        }
+
+        .action-card.primary::before {
+            background: linear-gradient(135deg, rgba(91,79,207,0.12), transparent);
+        }
+
+        .action-card.secondary::before {
+            background: linear-gradient(135deg, rgba(162,155,254,0.10), transparent);
+        }
+
+        .action-card:active {
+            transform: scale(0.97);
+        }
+
+        .action-card:hover {
+            border-color: rgba(91,79,207,0.5);
+            box-shadow: 0 8px 32px rgba(91,79,207,0.15);
+        }
+
+        .action-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Shimmer line on top of card */
+        .action-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 40%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.15), transparent);
+        }
+
+        .card-1 { animation: fadeUp 0.5s 0.25s ease both; }
+        .card-2 { animation: fadeUp 0.5s 0.35s ease both; }
+
+        .icon-box {
+            width: 58px; height: 58px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .icon-box.purple {
+            background: linear-gradient(135deg, #5b4fcf, #7b6fe8);
+            box-shadow: 0 6px 20px rgba(91,79,207,0.35);
+        }
+
+        .icon-box.soft {
+            background: linear-gradient(135deg, #3d3570, #5b4fcf);
+            box-shadow: 0 6px 20px rgba(91,79,207,0.2);
+        }
+
+        .card-info { flex: 1; }
+
+        .card-info h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .card-info p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .card-arrow {
+            font-size: 1rem;
+            color: var(--muted);
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .action-card:hover .card-arrow {
+            transform: translateX(-4px);
+            color: var(--p-light);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: rgba(240,165,0,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(240,165,0,0.25);
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        /* Bottom quote */
+        .bottom-note {
+            margin-top: 36px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.78rem;
+            opacity: 0.6;
+            animation: fadeUp 0.5s 0.5s ease both;
+        }
+
+        /* Tips */
+        .tip-card {
+            margin-top: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 18px 16px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.5s 0.6s ease both;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 35%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .tip-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--p-light);
+        }
+
+        .tip-label .pulse {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--p-light);
+            animation: tipPulse 2s infinite;
+        }
+
+        .tip-refresh {
+            width: 28px; height: 28px;
+            border-radius: 9px;
+            background: rgba(91,79,207,0.12);
+            border: 1px solid rgba(91,79,207,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            color: var(--p-light);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.4s;
+            user-select: none;
+        }
+
+        .tip-refresh:hover { background: rgba(91,79,207,0.22); }
+        .tip-refresh.spin  { transform: rotate(360deg); }
+
+        .tip-text {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.7;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .tip-text.fade-out {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        .tip-category {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.63rem;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .cat-design { background: rgba(91,79,207,0.15);  color: #a29bfe; }
+        .cat-usage  { background: rgba(240,165,0,0.13);  color: #f0a500; }
+        .cat-pro    { background: rgba(0,206,201,0.12);  color: #00cec9; }
+
+        @keyframes tipPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.35; transform: scale(0.8); }
+        }
+
+        /* Animations */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="logo"><span>PRO</span> تصاميمي</div>
+        <div class="avatar">👤</div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <span class="greeting-label">مرحباً بك</span>
+        <h1 id="welcomeTitle">أهلاً أستاذ</h1>
+        <p>ماذا تريد أن تصمم اليوم؟ ✨</p>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-text">الخيارات</div>
+        <div class="divider-line"></div>
+    </div>
+
+    <!-- Card 1 -->
+    <a href="templates.html" class="action-card primary card-1">
+        <div class="icon-box purple">🎨</div>
+        <div class="card-info">
+            <div class="badge">جديد</div>
+            <h3>إنشاء إعلان جديد</h3>
+            <p>اختر قالباً وابدأ التصميم فوراً</p>
+        </div>
+        <div class="card-arrow">←</div>
+    </a>
+
+    <!-- Card 2 -->
+    <a href="archive.html" class="action-card secondary card-2">
+        <div class="icon-box soft">📂</div>
+        <div class="card-info">
+            <h3>التصاميم المحفوظة</h3>
+            <p>استعرض إعلاناتك السابقة</p>
+        </div>
+        <div class="card-arrow">←</div>
+    </a>
+
+    <div class="bottom-note">تصاميمك تعكس إبداعك 🎯</div>
+
+    <!-- Tip Card -->
+    <div class="tip-card" onclick="nextTip()">
+        <div class="tip-header">
+            <div class="tip-label">
+                <div class="pulse"></div>
+                نصيحة اليوم
+            </div>
+            <div class="tip-refresh" id="refreshBtn" onclick="event.stopPropagation(); nextTip()">↻</div>
+        </div>
+        <div class="tip-text" id="tipText"></div>
+        <span class="tip-category" id="tipCat"></span>
+    </div>
+
+</div>
+
+<script>
+    // ── Tips ──────────────────────────────────────────────────
+    const TIPS = [
+        { text: "استخدم خلفيات بسيطة لتبرز النصوص بشكل احترافي", cat: "تصميم", cls: "cat-design" },
+        { text: "لا تستخدم أكثر من خطَّين مختلفين في نفس التصميم", cat: "تصميم", cls: "cat-design" },
+        { text: "اترك مساحة فارغة كافية حول النص — أقل هو أكثر", cat: "تصميم", cls: "cat-design" },
+        { text: "الألوان المتضادة تجذب الانتباه، جرّبها للعناوين الرئيسية", cat: "تصميم", cls: "cat-design" },
+        { text: "احرص أن يكون حجم خط العنوان ضعف حجم خط التفاصيل", cat: "تصميم", cls: "cat-design" },
+        { text: "يمكنك سحب النصوص بإصبعك مباشرة داخل محرر التصميم", cat: "استخدام", cls: "cat-usage" },
+        { text: "اضغط على أي نص في المحرر لتغيير لونه أو حجمه فوراً", cat: "استخدام", cls: "cat-usage" },
+        { text: "إذا كان النص رابطاً، يمكنك تحويله لـ QR Code بنقرة واحدة", cat: "استخدام", cls: "cat-usage" },
+        { text: "يمكنك رفع صورتك الشخصية أو شعار مدرستك وإضافتها للتصميم", cat: "استخدام", cls: "cat-usage" },
+        { text: "التصاميم المحفوظة تبقى في أرشيفك لإعادة استخدامها لاحقاً", cat: "استخدام", cls: "cat-usage" },
+        { text: "جرّب تصدير التصميم بخلفية شفافة للاستخدام على أي لون", cat: "احترافي", cls: "cat-pro" },
+        { text: "للإعلانات الرقمية: استخدم حجم 1080×1080 للحصول على أفضل جودة", cat: "احترافي", cls: "cat-pro" },
+        { text: "التصميم الجيد يوصل فكرة واحدة بوضوح، لا عشر أفكار بفوضى", cat: "احترافي", cls: "cat-pro" },
+        { text: "خطأ شائع: النص الكثير يقلل من قراءة الإعلان — اختصر وركّز", cat: "احترافي", cls: "cat-pro" },
+    ];
+
+    let tipIndex = Math.floor(Math.random() * TIPS.length);
+
+    function showTip(animate) {
+        const t = TIPS[tipIndex];
+        const textEl = document.getElementById('tipText');
+        const catEl  = document.getElementById('tipCat');
+
+        if (animate) {
+            textEl.classList.add('fade-out');
+            setTimeout(() => {
+                textEl.innerText   = t.text;
+                catEl.innerText    = t.cat;
+                catEl.className    = 'tip-category ' + t.cls;
+                textEl.classList.remove('fade-out');
+            }, 220);
+        } else {
+            textEl.innerText = t.text;
+            catEl.innerText  = t.cat;
+            catEl.className  = 'tip-category ' + t.cls;
+        }
+    }
+
+    function nextTip() {
+        const btn = document.getElementById('refreshBtn');
+        btn.classList.add('spin');
+        setTimeout(() => btn.classList.remove('spin'), 400);
+        tipIndex = (tipIndex + 1) % TIPS.length;
+        showTip(true);
+    }
+
+    showTip(false);
+    // rotate tip every 12s automatically
+    setInterval(nextTip, 12000);
+
+    // ── Auth ──────────────────────────────────────────────────
+    const name = localStorage.getItem('teacher_name');
+    if (!name) {
+        window.location.href = 'welcome.html';
+    } else {
+        document.getElementById('welcomeTitle').innerText = 'أهلاً أستاذ ' + name;
+    }
+</script>
+</body>
+</html>

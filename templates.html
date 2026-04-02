@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصاميمي PRO | اختيار القالب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #7c6fff;
+            --p2: #5b4fcf;
+            --bg: #080712;
+            --surface: #100e22;
+            --surface2: #181530;
+            --text: #f0eeff;
+            --muted: #6b648f;
+            --border: rgba(255,255,255,0.06);
+            --accent: #f0a500;
+            --glow: rgba(124,111,255,0.25);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0 0 40px;
+            /* subtle grain texture */
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,111,255,0.12) 0%, transparent 70%);
+        }
+
+        /* ── HEADER ── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+        }
+
+        .back-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 9px 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+        .back-btn svg { width:14px; height:14px; }
+
+        .header-title {
+            font-size: 17px;
+            font-weight: 900;
+            letter-spacing: -0.3px;
+        }
+
+        .header-right { width: 80px; } /* spacer to center title */
+
+        /* ── HERO LABEL ── */
+        .hero {
+            text-align: center;
+            padding: 28px 20px 18px;
+        }
+        .hero-tag {
+            display: inline-block;
+            background: rgba(124,111,255,0.12);
+            border: 1px solid rgba(124,111,255,0.25);
+            color: var(--p);
+            font-size: 12px; font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .hero h1 {
+            font-size: 22px; font-weight: 900;
+            line-height: 1.3;
+        }
+        .hero p {
+            font-size: 13px; color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* ── SEARCH ── */
+        .search-wrap {
+            padding: 0 20px 18px;
+        }
+        .search-box {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 16px;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus-within {
+            border-color: rgba(124,111,255,0.4);
+            box-shadow: 0 0 0 3px rgba(124,111,255,0.08);
+        }
+        .search-box svg { color: var(--muted); flex-shrink:0; width:16px; height:16px; }
+        .search-box input {
+            background: none; border: none; outline: none;
+            color: var(--text); font-family: 'Cairo', sans-serif;
+            font-size: 14px; width: 100%;
+        }
+        .search-box input::placeholder { color: var(--muted); }
+
+        /* ── GRID ── */
+        .grid-wrap { padding: 0 15px; }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* UPLOAD CARD */
+        .upload-card {
+            aspect-ratio: 3/4;
+            border: 2px dashed rgba(124,111,255,0.35);
+            border-radius: 20px;
+            background: rgba(124,111,255,0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(124,111,255,0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .upload-card:hover::before, .upload-card:active::before { opacity: 1; }
+        .upload-card:active { transform: scale(0.97); border-color: var(--p); }
+
+        .upload-icon-wrap {
+            width: 56px; height: 56px;
+            background: rgba(124,111,255,0.12);
+            border: 1px solid rgba(124,111,255,0.25);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .upload-icon-wrap svg { width: 26px; height: 26px; color: var(--p); }
+        .upload-label {
+            font-size: 13px; font-weight: 700;
+            color: var(--p);
+            text-align: center;
+            line-height: 1.4;
+        }
+        .upload-sub {
+            font-size: 11px; color: var(--muted);
+        }
+
+        /* TEMPLATE CARD */
+        .template-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        .template-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,111,255,0.2);
+            border-color: rgba(124,111,255,0.3);
+        }
+        .template-card:active { transform: scale(0.97); }
+
+        .img-wrap {
+            width: 100%; aspect-ratio: 3/4;
+            overflow: hidden; position: relative;
+            background: #0c0b1a;
+        }
+        .img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+            display: block;
+        }
+        .template-card:hover .img-wrap img { transform: scale(1.05); }
+
+        /* shimmer overlay on image */
+        .img-wrap::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 55%, rgba(8,7,18,0.85) 100%);
+            pointer-events: none;
+        }
+
+        /* badge */
+        .badge {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(240,165,0,0.9);
+            color: #1a0d00;
+            font-size: 10px; font-weight: 900;
+            padding: 3px 9px; border-radius: 50px;
+            z-index: 2;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-info {
+            padding: 10px 12px 12px;
+            position: relative;
+        }
+        .card-name {
+            font-size: 13px; font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .card-sub {
+            font-size: 11px; color: var(--muted);
+        }
+
+        /* use button (appears on hover) */
+        .use-btn {
+            position: absolute;
+            bottom: 10px; left: 10px;
+            background: var(--p);
+            color: white;
+            font-size: 11px; font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            border: none; border-radius: 50px;
+            padding: 5px 12px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .template-card:hover .use-btn {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* EMPTY STATE */
+        .empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--muted);
+        }
+        .empty svg { width: 40px; opacity: 0.3; margin-bottom: 12px; }
+
+        #file-input { display: none; }
+
+        /* SCROLL FADE-IN */
+        @keyframes card-in {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .template-card, .upload-card {
+            animation: card-in 0.35s ease both;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-right"></div>
+        <div class="header-title">اختر القالب</div>
+        <a href="index.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+            رجوع
+        </a>
+    </div>
+
+    <div class="hero">
+        <div class="hero-tag">✦ تصاميمي PRO</div>
+        <h1>ابدأ من القالب المثالي</h1>
+        <p>اختر قالباً جاهزاً أو ارفع صورتك الخاصة</p>
+    </div>
+
+    <div class="search-wrap">
+        <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="ابحث عن قالب..." oninput="filterTemplates()">
+        </div>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*">
+
+    <div class="grid-wrap">
+        <div class="templates-grid" id="grid">
+            <div class="upload-card" onclick="document.getElementById('file-input').click()" style="animation-delay:0s">
+                <div class="upload-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12l4-4 4 4"/></svg>
+                </div>
+                <div class="upload-label">صورة من هاتفك</div>
+                <div class="upload-sub">JPG · PNG · WEBP</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const myTemplates = [
+            { name: "رياضيات", sub: "كلاسيك", url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400", badge: "شائع" },
+            { name: "علوم",    sub: "مودرن",  url: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=400" },
+            { name: "لغات",   sub: "بسيط",   url: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=400" },
+            { name: "فيزياء", sub: "فخم",    url: "https://images.unsplash.com/photo-1636466483764-4e389a74e9a4?w=400", badge: "جديد" },
+            { name: "تاريخ",  sub: "كلاسيك", url: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=400" },
+            { name: "أدب",    sub: "إبداعي", url: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=400" },
+        ];
+
+        const grid = document.getElementById('grid');
+        let cards = [];
+
+        myTemplates.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'template-card';
+            card.dataset.name = t.name + t.sub;
+            card.style.animationDelay = ((i + 1) * 0.06) + 's';
+            card.innerHTML = `
+                ${t.badge ? `<div class="badge">${t.badge}</div>` : ''}
+                <div class="img-wrap"><img src="${t.url}" loading="lazy" alt="${t.name}"></div>
+                <div class="card-info">
+                    <div class="card-name">${t.name}</div>
+                    <div class="card-sub">${t.sub}</div>
+                    <button class="use-btn">استخدم ✦</button>
+                </div>
+            `;
+            card.onclick = () => goToEditor(t.url, t.name);
+            grid.appendChild(card);
+            cards.push(card);
+        });
+
+        document.getElementById('file-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => goToEditor(ev.target.result, "صورة مخصصة");
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function goToEditor(imgUrl, name) {
+            sessionStorage.setItem('selected_img', imgUrl);
+            window.location.href = `editor.html?name=${encodeURIComponent(name)}`;
+        }
+
+        function filterTemplates() {
+            const q = document.getElementById('searchInput').value.trim();
+            let found = 0;
+            cards.forEach(c => {
+                const match = !q || c.dataset.name.includes(q);
+                c.style.display = match ? '' : 'none';
+                if (match) found++;
+            });
+            // empty state
+            let empty = document.getElementById('emptyState');
+            if (!found && q) {
+                if (!empty) {
+                    empty = document.createElement('div');
+                    empty.id = 'emptyState';
+                    empty.className = 'empty';
+                    empty.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
+                        <p>لا توجد نتائج لـ "<strong>${q}</strong>"</p>`;
+                    grid.appendChild(empty);
+                }
+                empty.style.display = 'block';
+            } else if (empty) {
+                empty.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

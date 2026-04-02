@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرك البيانات المرن | PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --p: #5b4fcf;
+            --p-light: #7b6fe8;
+            --p-glow: rgba(91,79,207,0.2);
+            --bg: #0d0c1a;
+            --surface: #15132b;
+            --surface2: #1e1b38;
+            --text: #f0eeff;
+            --muted: #8b85b5;
+            --border: rgba(255,255,255,0.07);
+            --accent: #f0a500;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 15% 0%, rgba(91,79,207,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 100%, rgba(162,155,254,0.1) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 0 16px 60px;
+        }
+
+        /* ── Top Bar ── */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 0;
+            margin-bottom: 20px;
+            animation: fadeDown 0.4s ease both;
+        }
+
+        .back-btn {
+            width: 38px; height: 38px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1rem;
+            color: var(--muted);
+            transition: border-color 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover { border-color: var(--p-light); color: var(--p-light); }
+
+        .page-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .step-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            color: var(--muted);
+        }
+
+        /* ── Preview Zone ── */
+        .preview-wrap {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            margin-bottom: 24px;
+            animation: fadeDown 0.4s 0.1s ease both;
+        }
+
+        .preview-shell {
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+            background: #000;
+            position: relative;
+        }
+
+        .preview-shell::before {
+            content: 'معاينة مباشرة';
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        canvas { width: 100%; display: block; }
+
+        /* ── Section Headers ── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 28px 0 12px;
+            animation: fadeUp 0.4s 0.2s ease both;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 900;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .section-label .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--p-light);
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: transparent;
+            color: var(--p-light);
+            border: 1px solid rgba(91,79,207,0.35);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: inherit;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-add:hover { background: rgba(91,79,207,0.12); border-color: var(--p-light); }
+
+        /* ── Input Cards ── */
+        #text-fields-container { display: flex; flex-direction: column; gap: 10px; }
+
+        .input-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+            position: relative;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .input-card:focus-within {
+            border-color: rgba(91,79,207,0.45);
+            box-shadow: 0 4px 20px rgba(91,79,207,0.12);
+        }
+
+        .input-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 35%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.08), transparent);
+        }
+
+        .field-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-label .field-num {
+            width: 18px; height: 18px;
+            background: var(--p);
+            border-radius: 6px;
+            font-size: 0.65rem;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .field-input-wrap {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            padding: 11px 14px;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: rgba(91,79,207,0.5);
+        }
+
+        input[type="text"]::placeholder { color: var(--muted); }
+
+        .qr-option {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 9px 12px;
+            background: rgba(162,155,254,0.07);
+            border: 1px solid rgba(162,155,254,0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .qr-option:hover { background: rgba(162,155,254,0.12); }
+
+        .qr-option-text {
+            font-size: 0.78rem;
+            color: #a29bfe;
+            font-weight: 600;
+        }
+
+        /* Custom checkbox */
+        .custom-check {
+            width: 18px; height: 18px;
+            border-radius: 6px;
+            border: 2px solid #a29bfe;
+            background: transparent;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .d-qr-check { display: none; }
+        .d-qr-check:checked + .custom-check { background: #a29bfe; }
+        .d-qr-check:checked + .custom-check::after { content: '✓'; font-size: 0.7rem; color: #fff; }
+
+        /* delete button */
+        .card-delete {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 28px; height: 28px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .card-delete:hover { background: rgba(255,80,80,0.12); color: #ff6b6b; border-color: rgba(255,80,80,0.2); }
+
+        /* ── Image Previews ── */
+        #img-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            animation: fadeUp 0.4s 0.3s ease both;
+        }
+
+        .img-thumb {
+            width: 72px; height: 72px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .img-upload-trigger {
+            width: 72px; height: 72px;
+            border-radius: 12px;
+            border: 1px dashed rgba(91,79,207,0.4);
+            background: var(--surface);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--p-light);
+            font-size: 1.3rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .img-upload-trigger:hover { background: rgba(91,79,207,0.1); border-color: var(--p-light); }
+
+        /* ── Next Button ── */
+        .btn-next-wrap {
+            margin-top: 32px;
+            animation: fadeUp 0.4s 0.4s ease both;
+        }
+
+        .btn-next {
+            width: 100%;
+            background: linear-gradient(135deg, #5b4fcf, #7b6fe8);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(91,79,207,0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-next::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(91,79,207,0.45); }
+        .btn-next:active { transform: scale(0.98); }
+
+        /* ── Hidden QR container ── */
+        #qr-hidden { display: none; }
+
+        /* ── Animations ── */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="qr-hidden"></div>
+
+<div class="page-wrapper">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <a href="#" class="back-btn">→</a>
+        <div class="page-title">محرر البيانات</div>
+        <div class="step-badge">خطوة 2/3</div>
+    </div>
+
+    <!-- Preview -->
+    <div class="preview-wrap">
+        <div class="preview-shell">
+            <canvas id="mainCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Text Fields -->
+    <div class="section-header">
+        <div class="section-label">
+            <div class="dot"></div>
+            نصوص التصميم
+        </div>
+        <button class="btn-add" onclick="addNewTextField()">＋ إضافة حقل</button>
+    </div>
+
+    <div id="text-fields-container">
+        <!-- Initial field injected by JS -->
+    </div>
+
+    <!-- Images -->
+    <div class="section-header">
+        <div class="section-label">
+            <div class="dot"></div>
+            الصور المضافة
+        </div>
+        <button class="btn-add" onclick="document.getElementById('img-up').click()">＋ رفع صورة</button>
+    </div>
+
+    <input type="file" id="img-up" style="display:none" accept="image/*" onchange="uploadExtraImg(event)">
+
+    <div id="img-previews">
+        <div class="img-upload-trigger" onclick="document.getElementById('img-up').click()">＋</div>
+    </div>
+
+    <!-- Next -->
+    <div class="btn-next-wrap">
+        <button class="btn-next" onclick="saveAndGo()">
+            حفظ والذهاب للتعديل &nbsp;←
+        </button>
+    </div>
+
+</div>
+
+<script>
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    let bgImg = new Image();
+    let extras = [];
+    let fieldCount = 0;
+
+    canvas.width = 800;
+    canvas.height = 800;
+
+    window.onload = () => {
+        bgImg.crossOrigin = "anonymous";
+        bgImg.src = sessionStorage.getItem('selected_img') || "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800";
+        bgImg.onload = render;
+        addNewTextField(); // start with one field
+    };
+
+    function addNewTextField() {
+        fieldCount++;
+        const div = document.createElement('div');
+        div.className = 'input-card';
+        div.innerHTML = `
+            <div class="field-label">
+                <div class="field-num">${fieldCount}</div>
+                حقل نصي
+            </div>
+            ${fieldCount > 1 ? `<button class="card-delete" onclick="removeCard(this)" title="حذف">✕</button>` : ''}
+            <div class="field-input-wrap">
+                <input type="text" class="d-text" placeholder="اكتب نصاً أو رابطاً..." oninput="checkLink(this)">
+            </div>
+            <label class="qr-option">
+                <input type="checkbox" class="d-qr-check" onchange="render()">
+                <div class="custom-check"></div>
+                <span class="qr-option-text">🔗 تحويل لـ QR Code</span>
+            </label>
+        `;
+        document.getElementById('text-fields-container').appendChild(div);
+    }
+
+    function removeCard(btn) {
+        btn.closest('.input-card').remove();
+        render();
+    }
+
+    function checkLink(input) {
+        const val = input.value;
+        const qrLabel = input.closest('.input-card').querySelector('.qr-option');
+        const isLink = val.includes('http') || val.includes('www') || val.includes('.com');
+        qrLabel.style.display = isLink ? 'flex' : 'none';
+        if (!isLink) qrLabel.querySelector('.d-qr-check').checked = false;
+        render();
+    }
+
+    function uploadExtraImg(e) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                extras.push(img);
+                // show thumb
+                const thumb = document.createElement('img');
+                thumb.className = 'img-thumb';
+                thumb.src = ev.target.result;
+                document.getElementById('img-previews').insertBefore(thumb, document.querySelector('.img-upload-trigger'));
+                render();
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    async function render() {
+        ctx.clearRect(0, 0, 800, 800);
+        ctx.drawImage(bgImg, 0, 0, 800, 800);
+
+        // Subtle overlay
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.fillRect(0, 0, 800, 800);
+
+        const fields = document.querySelectorAll('.input-card');
+        let textY = 560;
+
+        for (let card of fields) {
+            const text = card.querySelector('.d-text').value;
+            const isQR = card.querySelector('.d-qr-check').checked;
+            if (!text) continue;
+
+            if (isQR) {
+                await drawQR(text);
+            } else {
+                ctx.shadowColor = 'rgba(0,0,0,0.6)';
+                ctx.shadowBlur = 12;
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'center';
+                ctx.font = "900 46px 'Cairo'";
+                ctx.fillText(text, 400, textY);
+                ctx.shadowBlur = 0;
+                textY += 68;
+            }
+        }
+
+        extras.forEach((im, i) => {
+            ctx.drawImage(im, 20 + (i * 110), 20, 100, 100);
+        });
+    }
+
+    function drawQR(url) {
+        return new Promise(res => {
+            const holder = document.getElementById('qr-hidden');
+            holder.innerHTML = '';
+            new QRCode(holder, { text: url, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.H });
+            setTimeout(() => {
+                const qrCanvas = holder.querySelector('canvas');
+                if (qrCanvas) {
+                    // White rounded background
+                    ctx.fillStyle = '#ffffff';
+                    roundRect(ctx, 638, 638, 144, 144, 12);
+                    ctx.drawImage(qrCanvas, 650, 650, 120, 120);
+                }
+                res();
+            }, 150);
+        });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function saveAndGo() {
+        window.location.href = 'settings.html';
+    }
+</script>
+</body>
+</html>
